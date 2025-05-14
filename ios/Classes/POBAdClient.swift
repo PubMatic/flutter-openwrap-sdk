@@ -53,9 +53,9 @@ class POBAdClient: NSObject {
         if let networkTimeout = values["networkTimeout"] as? Int {
             request?.networkTimeout = TimeInterval(networkTimeout)
         }
-        if let enableReturnAllBidStatus = values["enableReturnAllBidStatus"] as? Bool {
-            request?.enableReturnAllBidStatus = enableReturnAllBidStatus
-        }
+        // if let enableReturnAllBidStatus = values["enableReturnAllBidStatus"] as? Bool {
+        //     request?.enableReturnAllBidStatus = enableReturnAllBidStatus
+        // }
         if let testModeEnabled = values["testMode"] as? Bool {
             request?.testModeEnabled = testModeEnabled
         }

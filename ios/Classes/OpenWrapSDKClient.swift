@@ -83,7 +83,7 @@ class OpenWrapSDKClient: NSObject {
                         )
                     )
                 }
-            let config = OpenWrapSDKConfig(publisherId: publisherId, andProfileIds: profileIds)
+            let config = OpenWrapSDKConfig(publisherId: publisherId, andProfileIds: profileIds.map { NSNumber(value: $0) })
             OpenWrapSDK.initialize(with: config) { (success, error) in
                 if success {
                     result(nil)
