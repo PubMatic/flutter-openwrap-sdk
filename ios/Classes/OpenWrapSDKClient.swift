@@ -9,7 +9,7 @@ class OpenWrapSDKClient: NSObject {
 ///     - name: method to invoke
 ///     - call: FlutterMethodCall for argument & other details
 ///     - result: result block to invoke
-    static func invokeMethod(name:String, call: FlutterMethodCall, result: FlutterResult) {
+    static func invokeMethod(name:String, call: FlutterMethodCall, result: @escaping FlutterResult) {
 
         switch name {
         case "setLogLevel":
@@ -82,6 +82,7 @@ class OpenWrapSDKClient: NSObject {
                             details: "Cannot initialize OpenWrapSDK as the provided publisherId or profileId is invalid."
                         )
                     )
+                return
                 }
             let config = OpenWrapSDKConfig(publisherId: publisherId, andProfileIds: profileIds.map { NSNumber(value: $0) })
             OpenWrapSDK.initialize(with: config) { (success, error) in
