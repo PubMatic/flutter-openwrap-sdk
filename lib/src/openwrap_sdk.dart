@@ -8,6 +8,19 @@ import 'openwrap_sdk_method_channel.dart';
 class OpenWrapSDK {
   static const String _tag = 'OpenWrapSDK';
 
+  static Future<void> initialize(
+      {required String publisherId, required List<int> profileIds}) async {
+    // Initialize the OpenWrap SDK with the provided publisher ID and profile IDs
+    await openWrapMethodChannel.callPlatformMethodWithTag<void>(
+      tag: _tag,
+      methodName: 'init',
+      argument: <String, dynamic>{
+        'publisherId': publisherId,
+        'profileIds': profileIds,
+      },
+    );
+  }
+
   /// Sets log level across all ad formats. Default log level is LogLevel.Warn.
   /// [logLevel] log level to set.
   static Future<void> setLogLevel(final POBLogLevel logLevel) async {

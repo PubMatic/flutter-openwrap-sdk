@@ -29,7 +29,6 @@ void main() {
       if (names[1] == 'getBid') {
         return Future(() => {
               'price': 3.0,
-              'grossPrice': 3.0,
               'width': POBAdSize.bannerSize320x50.width,
               'height': POBAdSize.bannerSize320x50.height,
               'status': 1,
@@ -64,7 +63,6 @@ void main() {
 
       POBBid bid = await bannerAd.getBid();
       expect(bid.price, 3);
-      expect(bid.grossPrice, 3);
       expect(bid.height, POBAdSize.bannerSize320x50.height);
       expect(bid.width, POBAdSize.bannerSize320x50.width);
       expect(bid.status, 1);
@@ -84,7 +82,7 @@ void main() {
           adSizes: [POBAdSize.bannerSize320x50]);
 
       POBRequest request = POBRequest();
-      request.bidSummaryEnabled = false;
+      request.enableReturnAllBidStatus = false;
       request.debug = true;
       request.testMode = false;
       request.setNetworkTimeout = 100;
@@ -98,7 +96,8 @@ void main() {
       expect(testData['versionId'], request.versionId);
       expect(testData['testMode'], request.testMode);
       expect(testData['adServerUrl'], request.adServerUrl);
-      expect(testData['bidSummary'], request.bidSummaryEnabled);
+      expect(testData['enableReturnAllBidStatus'],
+          request.enableReturnAllBidStatus);
     });
 
     test('BannerView Impression', () {

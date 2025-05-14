@@ -1,6 +1,6 @@
-import UIKit
-import OpenWrapSDK
 import Flutter
+import OpenWrapSDK
+import UIKit
 
 class POBAdClient: NSObject {
     private(set) var adId: Int
@@ -11,10 +11,10 @@ class POBAdClient: NSObject {
 
     /**
      Creates and returns `Dictionary` of`POBBid`
-
+    
      - Parameters:
      - bid: `POBBid` received from Openwrap SDK
-
+    
      - Returns: Dictionary<String, Any> containing fields from `POBBid`
      */
     func convertBidToMap(bid: POBBid?) -> [String: Any] {
@@ -25,7 +25,6 @@ class POBAdClient: NSObject {
         bidMap["impressionId"] = bid.impressionId
         bidMap["bundle"] = bid.bundle
         bidMap["price"] = bid.price.doubleValue
-        bidMap["grossPrice"] = bid.grossPrice.doubleValue
         bidMap["height"] = Int(bid.size.height)
         bidMap["width"] = Int(bid.size.width)
         bidMap["status"] = bid.status.intValue
@@ -54,14 +53,14 @@ class POBAdClient: NSObject {
         if let networkTimeout = values["networkTimeout"] as? Int {
             request?.networkTimeout = TimeInterval(networkTimeout)
         }
-        if let bidSummaryEnabled = values["bidSummary"] as? Bool {
-            request?.bidSummaryEnabled = bidSummaryEnabled
+        if let enableReturnAllBidStatus = values["enableReturnAllBidStatus"] as? Bool {
+            request?.enableReturnAllBidStatus = enableReturnAllBidStatus
         }
         if let testModeEnabled = values["testMode"] as? Bool {
             request?.testModeEnabled = testModeEnabled
         }
 
-        // These properties can have either custom value or default value as `null`
+        // These properties can have eitxwher custom value or default value as `null`
         request?.versionId = values["versionId"] as? NSNumber
         request?.adServerURL = values["adServerUrl"] as? String
     }

@@ -37,8 +37,6 @@ const String keyCreativeType = 'creativeType';
 
 const String keyDealId = 'dealId';
 
-const String keyGrossPrice = 'grossPrice';
-
 const String keyLurl = 'lurl';
 
 const String keyNurl = 'nurl';

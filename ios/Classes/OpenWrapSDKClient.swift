@@ -71,6 +71,30 @@ class OpenWrapSDKClient: NSObject {
                 setUserInfo(userInfo: userInfo)
             }
             result(nil)
+        case "initialize":
+            guard let arguments = call.arguments as? Dictionary<String, Any>,
+                let publisherId = arguments["publisherId"] as? String,
+                let profileIds = arguments["profileIds"] as? [Int] else {
+                result(
+                        FlutterError(
+                            code: Constants.kOpenWrapPlatformException,
+                            message: "Error while calling initialize on OpenWrapSDK class.",
+                            details: "Cannot initialize OpenWrapSDK as the provided publisherId or profileId is invalid."
+                        )
+                    )
+                }
+            let config = OpenWrapSDKConfig(publisherId: publisherId, andProfileIds: profileIds)
+            OpenWrapSDK.initialize(with: config) { (success, error) in
+                if success {
+                    result(nil)
+                } else if let error = error {
+                    FlutterError(
+                        code: Constants.kOpenWrapPlatformException,
+                        message: "Error while calling initialize on OpenWrapSDK class.",
+                        details: error.localizedDescription
+                    )
+                }
+            }
         default:
             /// Unsupported method call; error out
             result(FlutterMethodNotImplemented)

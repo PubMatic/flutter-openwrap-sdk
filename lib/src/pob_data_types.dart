@@ -218,7 +218,7 @@ class POBRequest {
 
   /// Disables bid summary that is sent in the response, if true.
   /// Default value is false.
-  bool bidSummaryEnabled = false;
+  bool enableReturnAllBidStatus = false;
 
   /// This is used to specify OpenWrap version Id of the publisher.
   /// If this is not specified, live version of the profile is considered.
@@ -318,9 +318,6 @@ class POBBid {
   /// Net Ecpm price / bid value
   late double price;
 
-  /// Gross Ecpm price/bid value
-  late double grossPrice;
-
   /// Width of bid creative
   late int width;
 
@@ -383,7 +380,6 @@ class POBBid {
       ..creativeId = POBUtils.cast(map?[keyCreativeId])
       ..creativeType = POBUtils.cast(map?[keyCreativeType])
       ..dealId = POBUtils.cast(map?[keyDealId])
-      ..grossPrice = POBUtils.cast(map?[keyGrossPrice]) ?? 0.0
       ..lurl = POBUtils.cast(map?[keyLurl])
       ..nurl = POBUtils.cast(map?[keyNurl])
       ..partnerName = POBUtils.cast(map?[keyPartnerName])

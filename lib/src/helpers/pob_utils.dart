@@ -40,7 +40,7 @@ class POBUtils {
     requestMap['versionId'] = request.versionId;
     requestMap['testMode'] = request.testMode;
     requestMap['adServerUrl'] = request.adServerUrl;
-    requestMap['bidSummary'] = request.bidSummaryEnabled;
+    requestMap['enableReturnAllBidStatus'] = request.enableReturnAllBidStatus;
 
     return requestMap;
   }

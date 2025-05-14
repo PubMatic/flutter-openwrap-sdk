@@ -53,8 +53,8 @@ abstract class POBAdClient(val adId: Int, protected val channel: MethodChannel) 
       request?.networkTimeout = it
     }
 
-    call.argument<Boolean>("bidSummary")?.let {
-      request?.enableBidSummary(it)
+    call.argument<Boolean>("enableReturnAllBidStatus")?.let {
+      request?.enableReturnAllBidStatus(it)
     }
 
     request?.versionId = call.argument<Int>("versionId")
@@ -96,7 +96,6 @@ abstract class POBAdClient(val adId: Int, protected val channel: MethodChannel) 
     bidMap["impressionId"] = bid?.impressionId
     bidMap["bundle"] = bid?.bundle
     bidMap["price"] = bid?.price
-    bidMap["grossPrice"] = bid?.grossPrice
     bidMap["height"] = bid?.height
     bidMap["width"] = bid?.width
     bidMap["status"] = bid?.status

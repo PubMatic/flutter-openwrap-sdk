@@ -4,6 +4,9 @@ import com.pubmatic.sdk.common.OpenWrapSDK
 import com.pubmatic.sdk.common.models.POBApplicationInfo
 import com.pubmatic.sdk.common.models.POBLocation
 import com.pubmatic.sdk.common.models.POBUserInfo
+import com.pubmatic.sdk.common.OpenWrapSDKConfig
+import com.pubmatic.sdk.common.OpenWrapSDKInitializer
+import com.pubmatic.sdk.common.POBError
 
 import com.pubmatic.sdk.flutter_openwrap_sdk.POBUtils.findBy
 
@@ -108,6 +111,38 @@ object OpenWrapSDKClient {
       "setUserInfo" -> {
         OpenWrapSDK.setUserInfo(convertMapToUserInfo(call))
         result.success(null)
+      }
+
+      "initialize" -> {
+        call.arguments?.let { argument ->
+          val publisherId: String? = call.arguments?("publisherId")
+          val profileIds: List<String?> = call.arguments("profileIds")
+
+          if (publisherId != null && profileIds != null) {
+            val openWrapSDKConfigBuilder = OpenWrapSDKConfig.Builder(<PUBLISHER_ID>, listOf(<PROFILE_ID>))
+            val openWrapSDKConfig = openWrapSDKConfigBuilder.build()
+            
+            OpenWrapSDK.initialize(applicationContext, openWrapSDKConfig, object: OpenWrapSDKInitializer.Listener {
+                override fun onFailure(error: POBError) {
+                    result.error(
+                        POBFlutterConstants.OPENWRAP_PLATFORM_EXCEPTION,
+                        "Error while calling initialize on OpenWrapSDK class.",
+                        error
+                    )
+                }
+                override fun onSuccess() {
+                  result.success(null)
+                }
+            })
+            return
+          }
+
+          result.error(
+            POBFlutterConstants.OPENWRAP_PLATFORM_EXCEPTION,
+            "Error while calling initialize on OpenWrapSDK class.",
+            "Cannot initialize OpenWrapSDK as the provided publisherId or profileId is invalid."
+          )
+        }
       }
 
       else -> {

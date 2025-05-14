@@ -50,6 +50,6 @@ android {
 
     dependencies {
         // To integrate OpenWrap SDK
-        implementation 'com.pubmatic.sdk:openwrap:3.5.0'
+        implementation 'com.pubmatic.sdk:openwrap:4.+'
     }
 }

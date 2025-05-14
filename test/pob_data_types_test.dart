@@ -150,7 +150,6 @@ void main() {
         'impressionId': 'impression_id',
         'bundle': 'bundle_id',
         'price': 3.0,
-        'grossPrice': 3.0,
         'width': POBAdSize.bannerSize320x50.width,
         'height': POBAdSize.bannerSize320x50.height,
         'status': 1,
@@ -173,7 +172,6 @@ void main() {
       expect(bid.impressionId, 'impression_id');
       expect(bid.bundle, 'bundle_id');
       expect(bid.price, 3.0);
-      expect(bid.grossPrice, 3.0);
       expect(bid.width, POBAdSize.bannerSize320x50.width);
       expect(bid.height, POBAdSize.bannerSize320x50.height);
       expect(bid.status, 1);
@@ -193,7 +191,6 @@ void main() {
     test('POBBid tests with invalid inputs', () {
       Map<Object?, Object?> bidMap = {
         'price': 1,
-        'grossPrice': 2,
         'width': POBAdSize.bannerSize320x50.width,
         'height': POBAdSize.bannerSize320x50.height,
         'status': 1,
@@ -208,9 +205,6 @@ void main() {
 
       /// price expects double value. It is set to 0.0 for invalid data
       expect(bid.price, 0.0);
-
-      /// grossPrice expects double value. It is set to 0.0 for invalid data
-      expect(bid.grossPrice, 0.0);
 
       expect(bid.width, POBAdSize.bannerSize320x50.width);
       expect(bid.height, POBAdSize.bannerSize320x50.height);
