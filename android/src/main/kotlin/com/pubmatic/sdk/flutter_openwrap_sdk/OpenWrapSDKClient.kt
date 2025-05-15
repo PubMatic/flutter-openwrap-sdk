@@ -13,6 +13,8 @@ import com.pubmatic.sdk.flutter_openwrap_sdk.POBUtils.findBy
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel.Result
 
+import android.content.Context
+
 import java.net.URL
 
 /**
@@ -28,7 +30,7 @@ object OpenWrapSDKClient {
    * @param result to transfer the result for native side
    */
   @JvmStatic
-  fun methodCall(methodName: String, call: MethodCall, result: Result) {
+  fun methodCall(methodName: String, call: MethodCall, context: Context, result: Result) {
     when (methodName) {
       "setLogLevel" -> {
         call.arguments?.let { argument ->
@@ -119,10 +121,10 @@ object OpenWrapSDKClient {
           val profileIds: List<String?> = call.arguments("profileIds")
 
           if (publisherId != null && profileIds != null) {
-            val openWrapSDKConfigBuilder = OpenWrapSDKConfig.Builder(<PUBLISHER_ID>, listOf(<PROFILE_ID>))
+            val openWrapSDKConfigBuilder = OpenWrapSDKConfig.Builder(publisherId, profileIds)
             val openWrapSDKConfig = openWrapSDKConfigBuilder.build()
             
-            OpenWrapSDK.initialize(applicationContext, openWrapSDKConfig, object: OpenWrapSDKInitializer.Listener {
+            OpenWrapSDK.initialize(context, openWrapSDKConfig, object: OpenWrapSDKInitializer.Listener {
                 override fun onFailure(error: POBError) {
                     result.error(
                         POBFlutterConstants.OPENWRAP_PLATFORM_EXCEPTION,
