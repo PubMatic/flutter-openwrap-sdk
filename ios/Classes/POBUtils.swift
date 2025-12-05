@@ -24,6 +24,23 @@ public class POBUtils {
     }
 
     /**
+     Creates and returns `Dictionary` using provided `NSError`
+
+     - Parameters:
+        - error: `NSError` received from Openwrap SDK
+
+     - Returns: Dictionary<Sring, Any> containing fields from `NSError`
+     */
+    static func convertErrorToMap(error: NSError) -> [String: Any] {
+        let errorCode = error.code
+        let message = error.localizedDescription
+        return [
+            Constants.kErrCodeKey: errorCode,
+            Constants.kErrMsgKey: message
+        ]
+    }
+
+    /**
      Creates and returns `NSError` from provided `Dictionary`
      
      - Parameters:
@@ -79,6 +96,21 @@ public class POBUtils {
     }
 
     /**
+     Creates and returns `Dictionary` using provided `POBAdSize` and adId.
+     
+     - Parameters:
+     - adSize: `POBAdSize` received from Openwrap SDK
+     - adID: Unique Id of an ad for which error has occurred
+     
+     - Returns: Dictionary<Sring, Any> containing fields from `POBAdSize` and adId
+     */
+    static func convertPOBAdSizeAndAdIdToMap(adSize: POBAdSize, adId: Int) -> [String: Any] {
+        var result = convertPOBAdSizeToMap(adSize: adSize)
+        result[Constants.kAdIdKey] = adId
+        return result
+    }
+
+    /**
      Creates and returns `Dictionary` of`Custom Targeting`  and `adId`
 
      - Parameters:
@@ -102,6 +134,24 @@ public class POBUtils {
         customTargetingMap[Constants.kTargetingKey] = targetingMap
 
         return customTargetingMap
+    }
+
+    /**
+     Creates and returns `Dictionary` using provided `POBExternalUserId`
+     
+     - Parameters:
+     - externalUserId: `POBExternalUserId` object from OpenWrap SDK
+     
+     - Returns: Dictionary<String, Any> containing fields from `POBExternalUserId` including extension property
+     */
+    static func convertExternalUserIdToMap(externalUserId: POBExternalUserId) -> [String: Any] {
+        var map: [String: Any] = [
+            "source": externalUserId.source,
+            "id": externalUserId.externalUserId,
+            "atype": externalUserId.atype,
+            "ext": externalUserId.extension
+        ]
+        return map
     }
 
 }

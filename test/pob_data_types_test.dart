@@ -141,6 +141,10 @@ void main() {
     POBRequest request = POBRequest();
     request.setNetworkTimeout = 34;
     expect(request.getNetworkTimeout, 34);
+
+    POBRequest request2 = POBRequest();
+    request2.setNetworkTimeout = -23;
+    expect(request2.getNetworkTimeout, 5);
   });
 
   group('POBBid tests', () {
@@ -150,7 +154,6 @@ void main() {
         'impressionId': 'impression_id',
         'bundle': 'bundle_id',
         'price': 3.0,
-        'grossPrice': 3.0,
         'width': POBAdSize.bannerSize320x50.width,
         'height': POBAdSize.bannerSize320x50.height,
         'status': 1,
@@ -173,7 +176,6 @@ void main() {
       expect(bid.impressionId, 'impression_id');
       expect(bid.bundle, 'bundle_id');
       expect(bid.price, 3.0);
-      expect(bid.grossPrice, 3.0);
       expect(bid.width, POBAdSize.bannerSize320x50.width);
       expect(bid.height, POBAdSize.bannerSize320x50.height);
       expect(bid.status, 1);
@@ -193,7 +195,6 @@ void main() {
     test('POBBid tests with invalid inputs', () {
       Map<Object?, Object?> bidMap = {
         'price': 1,
-        'grossPrice': 2,
         'width': POBAdSize.bannerSize320x50.width,
         'height': POBAdSize.bannerSize320x50.height,
         'status': 1,
@@ -209,9 +210,6 @@ void main() {
       /// price expects double value. It is set to 0.0 for invalid data
       expect(bid.price, 0.0);
 
-      /// grossPrice expects double value. It is set to 0.0 for invalid data
-      expect(bid.grossPrice, 0.0);
-
       expect(bid.width, POBAdSize.bannerSize320x50.width);
       expect(bid.height, POBAdSize.bannerSize320x50.height);
       expect(bid.status, 1);
@@ -224,6 +222,317 @@ void main() {
       expect(bid.targetingInfo, {'a': '0', 'b': '1'});
       expect(bid.rewardAmount, 50);
       expect(bid.rewardCurrencyType, 'coin');
+    });
+  });
+
+  group('POBReward tests', () {
+    test('POBReward constructor and toString method', () {
+      // Test with typical reward values
+      POBReward reward1 = POBReward(currencyType: 'coins', amount: 100);
+      expect(reward1.currencyType, 'coins');
+      expect(reward1.amount, 100);
+      expect(reward1.toString(),
+          'POBReward{currencyType=\'coins\', amount=\'100\'}');
+
+      // Test with different currency type and amount
+      POBReward reward2 = POBReward(currencyType: 'points', amount: 50);
+      expect(reward2.currencyType, 'points');
+      expect(reward2.amount, 50);
+      expect(reward2.toString(),
+          'POBReward{currencyType=\'points\', amount=\'50\'}');
+
+      // Test with zero amount
+      POBReward reward3 = POBReward(currencyType: 'gems', amount: 0);
+      expect(
+          reward3.toString(), 'POBReward{currencyType=\'gems\', amount=\'0\'}');
+
+      // Test with negative amount (edge case)
+      POBReward reward4 = POBReward(currencyType: 'lives', amount: -1);
+      expect(reward4.toString(),
+          'POBReward{currencyType=\'lives\', amount=\'-1\'}');
+
+      // Test with empty currency type
+      POBReward reward5 = POBReward(currencyType: '', amount: 25);
+      expect(reward5.toString(), 'POBReward{currencyType=\'\', amount=\'25\'}');
+
+      // Test with special characters in currency type
+      POBReward reward6 =
+          POBReward(currencyType: 'test\'s currency', amount: 999);
+      expect(reward6.toString(),
+          'POBReward{currencyType=\'test\'s currency\', amount=\'999\'}');
+
+      // Test with large amount
+      POBReward reward7 = POBReward(currencyType: 'dollars', amount: 1000000);
+      expect(reward7.toString(),
+          'POBReward{currencyType=\'dollars\', amount=\'1000000\'}');
+    });
+  });
+
+  group('POBExternalUserId tests', () {
+    test('Testing constructor with required parameters only', () {
+      POBExternalUserId externalUserId = POBExternalUserId(
+        source: 'liveramp.com',
+        id: 'user123',
+      );
+
+      expect(externalUserId.source, 'liveramp.com');
+      expect(externalUserId.id, 'user123');
+      expect(externalUserId.atype, 0); // Default value
+      expect(externalUserId.ext, isNull);
+    });
+
+    test('Testing constructor with all parameters', () {
+      Map<String, dynamic> extMap = {'consent': 'granted', 'version': '1.0'};
+
+      POBExternalUserId externalUserId = POBExternalUserId(
+        source: 'adserver.org',
+        id: 'xyz789',
+        atype: 1,
+        ext: extMap,
+      );
+
+      expect(externalUserId.source, 'adserver.org');
+      expect(externalUserId.id, 'xyz789');
+      expect(externalUserId.atype, 1);
+      expect(externalUserId.ext, extMap);
+    });
+
+    test('Testing toMap method with required parameters only', () {
+      POBExternalUserId externalUserId = POBExternalUserId(
+        source: 'liveramp.com',
+        id: 'user123',
+      );
+
+      Map<String, dynamic> result = externalUserId.toMap();
+
+      expect(result['source'], 'liveramp.com');
+      expect(result['id'], 'user123');
+      expect(result['atype'], 0);
+      expect(result.containsKey('ext'), false); // ext should not be in map
+    });
+
+    test('Testing toMap method with all parameters', () {
+      Map<String, dynamic> extMap = {'key': 'value'};
+
+      POBExternalUserId externalUserId = POBExternalUserId(
+        source: 'adserver.org',
+        id: 'xyz789',
+        atype: 2,
+        ext: extMap,
+      );
+
+      Map<String, dynamic> result = externalUserId.toMap();
+
+      expect(result['source'], 'adserver.org');
+      expect(result['id'], 'xyz789');
+      expect(result['atype'], 2);
+      expect(result['ext'], extMap);
+    });
+
+    test('Testing fromMap method with all parameters', () {
+      Map<String, dynamic> inputMap = {
+        'source': 'criteo.com',
+        'id': 'abc456',
+        'atype': 3,
+        'ext': {'param1': 'value1', 'param2': 'value2'}
+      };
+
+      POBExternalUserId externalUserId = POBExternalUserId.fromMap(inputMap);
+
+      expect(externalUserId.source, 'criteo.com');
+      expect(externalUserId.id, 'abc456');
+      expect(externalUserId.atype, 3);
+      expect(externalUserId.ext, isNotNull);
+      expect(externalUserId.ext!['param1'], 'value1');
+      expect(externalUserId.ext!['param2'], 'value2');
+    });
+
+    test('Testing fromMap method with missing optional parameters', () {
+      Map<String, dynamic> inputMap = {
+        'source': 'liveramp.com',
+        'id': 'user123',
+      };
+
+      POBExternalUserId externalUserId = POBExternalUserId.fromMap(inputMap);
+
+      expect(externalUserId.source, 'liveramp.com');
+      expect(externalUserId.id, 'user123');
+      expect(externalUserId.atype, 0); // Default value
+      expect(externalUserId.ext, isNull);
+    });
+
+    test('Testing fromMap method with null values', () {
+      Map<String, dynamic> inputMap = {
+        'source': null,
+        'id': null,
+        'atype': null,
+        'ext': null,
+      };
+
+      POBExternalUserId externalUserId = POBExternalUserId.fromMap(inputMap);
+
+      expect(externalUserId.source, ''); // Default empty string
+      expect(externalUserId.id, ''); // Default empty string
+      expect(externalUserId.atype, 0); // Default value
+      expect(externalUserId.ext, isNull);
+    });
+
+    test('Testing fromMap method with nested ext map', () {
+      Map<String, dynamic> inputMap = {
+        'source': 'datasource.com',
+        'id': 'nested123',
+        'atype': 1,
+        'ext': {
+          'level1': {
+            'level2': {'level3': 'deep value'}
+          },
+          'array': [1, 2, 3]
+        }
+      };
+
+      POBExternalUserId externalUserId = POBExternalUserId.fromMap(inputMap);
+
+      expect(externalUserId.source, 'datasource.com');
+      expect(externalUserId.id, 'nested123');
+      expect(externalUserId.atype, 1);
+      expect(externalUserId.ext, isNotNull);
+      expect(externalUserId.ext!['level1'], isA<Map<String, dynamic>>());
+      expect(externalUserId.ext!['level1']['level2']['level3'], 'deep value');
+      expect(externalUserId.ext!['array'], [1, 2, 3]);
+    });
+
+    test('Testing toString method with ext null', () {
+      POBExternalUserId externalUserId = POBExternalUserId(
+        source: 'test.com',
+        id: 'testId',
+        atype: 5,
+      );
+
+      String result = externalUserId.toString();
+      expect(result,
+          'POBExternalUserId{source: test.com, id: testId, atype: 5, ext: null}');
+    });
+
+    test('Testing toString method with ext present', () {
+      POBExternalUserId externalUserId = POBExternalUserId(
+        source: 'test.com',
+        id: 'testId',
+        atype: 5,
+        ext: {'key': 'value'},
+      );
+
+      String result = externalUserId.toString();
+      expect(
+          result,
+          'POBExternalUserId{source: test.com, id: testId, atype: 5, ext: '
+          '{key: value}}');
+    });
+
+    test('Testing atype mutation', () {
+      POBExternalUserId externalUserId = POBExternalUserId(
+        source: 'test.com',
+        id: 'testId',
+        atype: 1,
+      );
+
+      expect(externalUserId.atype, 1);
+
+      externalUserId.atype = 10;
+      expect(externalUserId.atype, 10);
+    });
+
+    test('Testing ext mutation', () {
+      POBExternalUserId externalUserId = POBExternalUserId(
+        source: 'test.com',
+        id: 'testId',
+      );
+
+      expect(externalUserId.ext, isNull);
+
+      Map<String, dynamic> newExt = {'updated': 'value'};
+      externalUserId.ext = newExt;
+      expect(externalUserId.ext, newExt);
+      expect(externalUserId.ext!['updated'], 'value');
+    });
+
+    test('Testing with empty strings', () {
+      POBExternalUserId externalUserId = POBExternalUserId(
+        source: '',
+        id: '',
+        atype: 0,
+      );
+
+      expect(externalUserId.source, '');
+      expect(externalUserId.id, '');
+
+      Map<String, dynamic> result = externalUserId.toMap();
+      expect(result['source'], '');
+      expect(result['id'], '');
+    });
+
+    test('Testing roundtrip conversion (toMap and fromMap)', () {
+      POBExternalUserId original = POBExternalUserId(
+        source: 'roundtrip.com',
+        id: 'user999',
+        atype: 7,
+        ext: {
+          'test': 'data',
+          'nested': {'inner': 'value'}
+        },
+      );
+
+      Map<String, dynamic> map = original.toMap();
+      POBExternalUserId reconstructed = POBExternalUserId.fromMap(map);
+
+      expect(reconstructed.source, original.source);
+      expect(reconstructed.id, original.id);
+      expect(reconstructed.atype, original.atype);
+      expect(reconstructed.ext!['test'], original.ext!['test']);
+      expect(reconstructed.ext!['nested']['inner'],
+          original.ext!['nested']['inner']);
+    });
+
+    test('Testing with special characters in source and id', () {
+      POBExternalUserId externalUserId = POBExternalUserId(
+        source: 'source-with-special.chars_123',
+        id: r'id@with#special$chars%',
+      );
+
+      expect(externalUserId.source, 'source-with-special.chars_123');
+      expect(externalUserId.id, r'id@with#special$chars%');
+
+      String result = externalUserId.toString();
+      expect(result, contains('source-with-special.chars_123'));
+      expect(result, contains(r'id@with#special$chars%'));
+    });
+
+    test('Testing with very large atype value', () {
+      POBExternalUserId externalUserId = POBExternalUserId(
+        source: 'test.com',
+        id: 'testId',
+        atype: 999999,
+      );
+
+      expect(externalUserId.atype, 999999);
+
+      Map<String, dynamic> map = externalUserId.toMap();
+      expect(map['atype'], 999999);
+
+      POBExternalUserId reconstructed = POBExternalUserId.fromMap(map);
+      expect(reconstructed.atype, 999999);
+    });
+
+    test('Testing fromMap with empty ext map', () {
+      Map<String, dynamic> inputMap = {
+        'source': 'test.com',
+        'id': 'testId',
+        'ext': {}
+      };
+
+      POBExternalUserId externalUserId = POBExternalUserId.fromMap(inputMap);
+
+      expect(externalUserId.ext, isNotNull);
+      expect(externalUserId.ext!.isEmpty, true);
     });
   });
 }

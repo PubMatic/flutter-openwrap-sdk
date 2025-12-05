@@ -1,3 +1,5 @@
+// coverage:ignore-file - Abstract base class with no concrete implementation to test
+
 import 'package:flutter/widgets.dart';
 
 import '../pob_type_definition.dart';

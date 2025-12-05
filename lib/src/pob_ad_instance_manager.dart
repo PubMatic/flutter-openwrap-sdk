@@ -17,12 +17,6 @@ class POBAdInstanceManager {
 
   int _adIndex = 0;
 
-  // Your methods and properties go here
-
-  void initialize() {
-    // Initialization logic
-  }
-
   int loadAd(POBAd ad) {
     int index = _adIndex++;
     adMap[index] = ad;

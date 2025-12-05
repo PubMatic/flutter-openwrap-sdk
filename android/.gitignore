@@ -7,3 +7,6 @@
 /build
 /captures
 .cxx
+
+# VS Code
+.vscode/

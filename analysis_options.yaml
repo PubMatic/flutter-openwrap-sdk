@@ -15,3 +15,4 @@ linter:
     - always_declare_return_types
     - cancel_subscriptions
     - await_only_futures
+    - directives_ordering

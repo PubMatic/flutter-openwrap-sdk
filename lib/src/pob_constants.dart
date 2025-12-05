@@ -1,3 +1,5 @@
+// coverage:ignore-file - Constants only, no logic to test
+
 // Constant for invoking native event handler methods.
 const String eventHandlerTag = 'EventHandler';
 
@@ -36,8 +38,6 @@ const String keyCreativeId = 'creativeId';
 const String keyCreativeType = 'creativeType';
 
 const String keyDealId = 'dealId';
-
-const String keyGrossPrice = 'grossPrice';
 
 const String keyLurl = 'lurl';
 

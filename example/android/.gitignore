@@ -11,3 +11,6 @@ gradlew.bat
 key.properties
 **/*.keystore
 **/*.jks
+
+# VS Code
+.vscode/

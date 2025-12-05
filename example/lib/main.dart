@@ -1,8 +1,13 @@
+import 'dart:developer' as developer;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_openwrap_sdk/flutter_openwrap_sdk.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import './helper/constants.dart';
 import 'screens/screens.dart';
+
+const String _tag = "MainScreen";
 
 void main() {
   runApp(const MainScreen());
@@ -28,13 +33,27 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
 
+    _initializeOpenWrapSDK();
     OpenWrapSDK.setLogLevel(POBLogLevel.all);
+    OpenWrapSDK.setDSAComplianceStatus(POBDSAComplianceStatus.required);
     _requestLocationPermission();
   }
 
   void _requestLocationPermission() async {
     const permission = Permission.location;
     await permission.request();
+  }
+
+  void _initializeOpenWrapSDK() {
+    // Invoke the initialize method to warm up the OpenWrap SDK.
+    OpenWrapSDK.initialize(
+        config: const OpenWrapSDKConfig(pubId, [profileId, videoProfileId]),
+        listener: OpenWrapSDKListener(
+          onOpenWrapSDKInitialize: () =>
+              developer.log('$_tag: OpenWrap SDK initialization successful'),
+          onOpenWrapSDKInitializeError: (error) => developer.log(
+              '$_tag: OpenWrap SDK initialization failed with error : $error'),
+        ));
   }
 
   @override
@@ -66,7 +85,8 @@ class MyListView extends StatelessWidget {
           scrollDirection: Axis.vertical,
           child: Column(
             children: [
-              for (var index in Iterable.generate(adType.length)) SubRow(index)
+              for (var index in Iterable<int>.generate(adType.length))
+                SubRow(index)
             ],
           ),
         ),
@@ -87,28 +107,28 @@ class SubRow extends StatelessWidget {
           case 0:
             Navigator.push(
               context,
-              MaterialPageRoute(
+              MaterialPageRoute<void>(
                   builder: (context) => const OpenWrapBannerScreen()),
             );
             break;
           case 1:
             Navigator.push(
               context,
-              MaterialPageRoute(
+              MaterialPageRoute<void>(
                   builder: (context) => const OpenWrapMRECDisplayScreen()),
             );
             break;
           case 2:
             Navigator.push(
               context,
-              MaterialPageRoute(
+              MaterialPageRoute<void>(
                   builder: (context) => const OpenWrapInterstitialScreen()),
             );
             break;
           case 3:
             Navigator.push(
               context,
-              MaterialPageRoute(
+              MaterialPageRoute<void>(
                   builder: (context) =>
                       const OpenWrapVideoInterstitialScreen()),
             );
@@ -116,7 +136,7 @@ class SubRow extends StatelessWidget {
           case 4:
             Navigator.push(
               context,
-              MaterialPageRoute(
+              MaterialPageRoute<void>(
                   builder: (context) => const OpenWrapRewardedAdScreen()),
             );
             break;

@@ -2,10 +2,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import 'event_handler/pob_base_event.dart';
-import 'pob_data_types.dart';
 import 'helpers/pob_utils.dart';
 import 'openwrap_sdk_method_channel.dart';
 import 'pob_constants.dart';
+import 'pob_data_types.dart';
 import 'pob_type_definition.dart';
 
 /// The base class for all OpenWrap ad formats.

@@ -1,0 +1,40 @@
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  exclude: [build/**]
+  language:
+    strict-casts: true
+    strict-raw-types: true
+    strict-inference: true
+  errors:
+    # Allow print statements in example app (for debugging/testing)
+    avoid_print: false
+    # Make other issues visible
+    avoid_type_to_string: warning
+    dead_code: error
+    unused_import: error
+    unused_local_variable: warning
+
+linter:
+  rules:
+    # Code quality
+    - always_declare_return_types
+    - cancel_subscriptions
+    - await_only_futures
+    - directives_ordering
+    - prefer_const_constructors
+    - prefer_const_literals_to_create_immutables
+    - prefer_final_locals
+    - unnecessary_null_checks
+    - use_key_in_widget_constructors
+    
+    # Best practices
+    - avoid_unnecessary_containers
+    - sized_box_for_whitespace
+    - sort_child_properties_last
+    
+    # Error prevention
+    - no_duplicate_case_values
+    - no_logic_in_create_state
+    - valid_regexps
+

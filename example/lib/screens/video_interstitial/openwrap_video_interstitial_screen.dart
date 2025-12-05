@@ -22,7 +22,7 @@ class _OpenWrapVideoInterstitialScreen
   @override
   void initState() {
     super.initState();
-    POBApplicationInfo applicationInfo = POBApplicationInfo();
+    final POBApplicationInfo applicationInfo = POBApplicationInfo();
 
     if (Platform.isAndroid) {
       // A valid Play Store Url of an Android application is required.
@@ -60,7 +60,7 @@ class _OpenWrapVideoInterstitialScreen
 
   void showAd() async {
     /// Check if interstitial as is ready before calling showAd()
-    bool isReady = await _interstitial?.isReady() ?? false;
+    final bool isReady = await _interstitial?.isReady() ?? false;
     if (isReady) {
       _interstitial?.showAd();
     } else {

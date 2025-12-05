@@ -1,3 +1,5 @@
+// coverage:ignore-file - Type definitions and function signatures only
+
 import 'package:flutter/widgets.dart';
 
 import 'event_handler/pob_base_event.dart';
@@ -25,6 +27,9 @@ typedef POBAdServerAdEvent = void Function();
 /// Function Definition to give Ad Failed call back to the listener
 typedef POBAdFailed<T extends POBAd> = void Function(T ad, POBError error);
 
+/// Function Definition to give Ad size change call back to the listener
+typedef POBAdSizeChanged<T extends POBAd> = void Function(T ad, POBAdSize size);
+
 /// Function Definition to give Ad expired call back to the listener
 typedef POBAdEvent<T extends POBAd> = void Function(T ad);
 
@@ -40,3 +45,9 @@ typedef POBEventGetAdSizes = List<POBAdSize>? Function();
 
 /// Function definition to return AdServer SDK [Widget].
 typedef POBEventAdServerWidget = Widget Function();
+
+/// Generic function definition for OpenWrap SDK events.
+typedef POBSDKEvent = void Function();
+
+/// Generic function definition for OpenWrap SDK error events.
+typedef POBSDKErrorEvent = void Function(POBError error);

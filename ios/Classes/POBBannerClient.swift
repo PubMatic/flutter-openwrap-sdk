@@ -125,4 +125,10 @@ class POBBannerClient: POBAdClient, POBBannerViewDelegate, FlutterPlatformView {
     func bannerViewDidRecordImpression(_ bannerView: POBBannerView) {
         methodChannel?.invokeMethod("onAdImpression", arguments: POBUtils.adIdArgs(adId: adId))
     }
+
+    // Notifies the delegate of ad size change
+    func bannerView(_ bannerView: POBBannerView, willChangeAdSizeTo size: POBAdSize) {
+        let adSizeMap = POBUtils.convertPOBAdSizeAndAdIdToMap(adSize: size, adId: adId)
+        methodChannel?.invokeMethod("onAdSizeChanged", arguments: adSizeMap)
+    }
 }

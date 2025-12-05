@@ -38,7 +38,7 @@ class OpenwrapSdkPlugin : FlutterPlugin, MethodCallHandler {
     val names = call.method.split('#')
 
     when (names[0]) {
-      "OpenWrapSDK" -> OpenWrapSDKClient.methodCall(names[1], call, result)
+      "OpenWrapSDK" -> OpenWrapSDKClient.methodCall(context, names[1], call, result)
 
       "initBannerAd" -> {
         val bannerViewClient = POBBannerViewClient(

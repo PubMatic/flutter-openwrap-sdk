@@ -1,18 +1,19 @@
+import 'dart:developer';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 
-import 'dart:developer';
+import 'event_handler/pob_banner_event.dart';
 import 'helpers/pob_utils.dart';
 import 'openwrap_sdk_method_channel.dart';
 import 'pob_ad.dart';
 import 'pob_ad_instance_manager.dart';
-import 'pob_data_types.dart';
-import 'event_handler/pob_banner_event.dart';
-import 'pob_type_definition.dart';
 import 'pob_constants.dart';
+import 'pob_data_types.dart';
+import 'pob_type_definition.dart';
 
 /// Class that displays the banner ad.
 ///
@@ -167,6 +168,9 @@ class POBBannerAd extends POBAd {
   /// Creates the instance of [POBBannerWidget] and returns it.
   POBBannerWidget get getAdWidget => _bannerWidget;
 
+  /// Returns true if the banner ad widget is currently mounted in the widget tree.
+  bool get isMounted => _widgetState?.mounted ?? false;
+
   /// Invoke this method when your screen is about to destroy. It cleans the
   /// resources.
   Future<void> destroy() {
@@ -214,10 +218,17 @@ class POBBannerAd extends POBAd {
                 POBUtils.cast(call.arguments[keyOpenWrapTargeting]));
         _eventHandler?.requestAd(openWrapTargeting: openWrapTargeting);
         break;
+      case 'onAdSizeChanged':
+        POBAdSize size =
+            POBUtils.convertMapToPOBAdSize(POBUtils.cast(call.arguments));
+        _listener?.onAdSizeChanged?.call(this, size);
+        break;
     }
   }
 }
 
+// UI widgets difficult to unit test.
+// coverage:ignore-start
 /// StatefulWidget to fetch the native banner view from respective platforms.
 class POBBannerWidget extends StatefulWidget {
   final POBBannerAd _bannerAd;
@@ -366,6 +377,7 @@ class _POBBannerWidgetState extends State<POBBannerWidget> {
     }
   }
 }
+// coverage:ignore-end
 
 /// Class to transfer callback from [POBBannerEvent]'s implementation to native
 /// event handler client.
@@ -409,6 +421,7 @@ class POBBannerAdListener extends POBAdListener<POBBannerAd> {
     POBAdEvent<POBBannerAd>? onAdOpened,
     POBAdEvent<POBBannerAd>? onAdImpression,
     this.onAdFailed,
+    this.onAdSizeChanged,
   }) : super(
           onAdClicked: onAdClicked,
           onAdClosed: onAdClosed,
@@ -421,4 +434,7 @@ class POBBannerAdListener extends POBAdListener<POBBannerAd> {
   /// Notifies the listener of an [error] encountered while loading or rendering
   /// an ad.
   final POBAdFailed<POBBannerAd>? onAdFailed;
+
+  /// Notifies the listener of an ad size change
+  final POBAdSizeChanged<POBBannerAd>? onAdSizeChanged;
 }

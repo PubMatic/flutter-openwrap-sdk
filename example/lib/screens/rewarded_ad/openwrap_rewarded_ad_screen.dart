@@ -1,5 +1,5 @@
-import 'dart:io';
 import 'dart:developer' as developer;
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_openwrap_sdk/flutter_openwrap_sdk.dart';
@@ -20,7 +20,7 @@ class _OpenWrapRewardedAdScreen extends State<OpenWrapRewardedAdScreen> {
   @override
   void initState() {
     super.initState();
-    POBApplicationInfo applicationInfo = POBApplicationInfo();
+    final POBApplicationInfo applicationInfo = POBApplicationInfo();
 
     if (Platform.isAndroid) {
       // A valid Play Store Url of an Android application is required.
@@ -55,7 +55,7 @@ class _OpenWrapRewardedAdScreen extends State<OpenWrapRewardedAdScreen> {
 
   void showAd() async {
     // Check if rewardedAd is ready before calling showAd method.
-    bool? isReady = await _rewarded.isReady();
+    final bool? isReady = await _rewarded.isReady();
     if (isReady == true) {
       _rewarded.showAd();
     } else {

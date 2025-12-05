@@ -53,10 +53,11 @@ abstract class POBAdClient(val adId: Int, protected val channel: MethodChannel) 
       request?.networkTimeout = it
     }
 
-    call.argument<Boolean>("bidSummary")?.let {
-      request?.enableBidSummary(it)
+    call.argument<Boolean>("returnAllBidStatus")?.let {
+      request?.enableReturnAllBidStatus(it)
     }
 
+    // Deprecated in SDK version 4.5.0
     request?.versionId = call.argument<Int>("versionId")
 
     call.argument<Boolean>("testMode")?.let {
@@ -81,6 +82,8 @@ abstract class POBAdClient(val adId: Int, protected val channel: MethodChannel) 
     impression?.testCreativeId = call.argument<String>("testCreativeId")
 
     impression?.setCustomParam(call.argument<Map<String, List<String>>>("customParams"))
+
+    call.argument<String>("gpid")?.let { impression?.setGpid(it) }
   }
 
   /**
@@ -96,7 +99,6 @@ abstract class POBAdClient(val adId: Int, protected val channel: MethodChannel) 
     bidMap["impressionId"] = bid?.impressionId
     bidMap["bundle"] = bid?.bundle
     bidMap["price"] = bid?.price
-    bidMap["grossPrice"] = bid?.grossPrice
     bidMap["height"] = bid?.height
     bidMap["width"] = bid?.width
     bidMap["status"] = bid?.status

@@ -1,12 +1,46 @@
 import 'dart:io';
-import 'pob_data_types.dart';
+
+import 'package:flutter/cupertino.dart';
+
+import 'helpers/pob_utils.dart';
 import 'openwrap_sdk_method_channel.dart';
+import 'pob_data_types.dart';
+import 'pob_type_definition.dart';
 
 /// Provides global configurations for the OpenWrap SDK, e.g., enabling logging,
 /// location access, GDPR, etc. These configurations are globally applicable for
 /// OpenWrap SDK; you don't have to set these for every ad request.
 class OpenWrapSDK {
   static const String _tag = 'OpenWrapSDK';
+
+  static void initialize(
+      {required final OpenWrapSDKConfig config,
+      final OpenWrapSDKListener? listener}) async {
+    Map<Object?, Object?>? result = await openWrapMethodChannel
+        .callPlatformMethodWithTag(
+            tag: _tag,
+            methodName: 'initialize',
+            argument: <String, dynamic>{
+          'publisherId': config.publisherId,
+          'profileIds': config.profileIds
+        });
+
+    if (result != null) {
+      if (result.containsKey("success")) {
+        listener?.onOpenWrapSDKInitialize?.call();
+      } else {
+        Map<Object?, Object?> errorMap =
+            result["error"] as Map<Object?, Object?>;
+        listener?.onOpenWrapSDKInitializeError
+            ?.call(POBUtils.convertMapToPOBError(errorMap));
+      }
+    } else {
+      listener?.onOpenWrapSDKInitializeError?.call(POBError(
+        errorCode: POBError.internalError,
+        errorMessage: "Internal Error Occurred",
+      ));
+    }
+  }
 
   /// Sets log level across all ad formats. Default log level is LogLevel.Warn.
   /// [logLevel] log level to set.
@@ -101,6 +135,9 @@ class OpenWrapSDK {
   ///
   /// [requestSecureCreative] false for disable secure creative mode.
   /// Default is set to true.
+  ///
+  /// **Deprecated:** This API is deprecated in v3.0.0 and will be removed from future plugin version. Going forward, the ow_sdk flutter plugin will support only secure creatives.
+  @Deprecated('This API is deprecated in OpenWrap SDK Flutter plugin v3.0.0')
   static Future<void> setSSLEnabled(final bool requestSecureCreative) =>
       openWrapMethodChannel.callPlatformMethodWithTag<void>(
           tag: _tag,
@@ -156,4 +193,116 @@ class OpenWrapSDK {
             'region': userInfo.region,
             'userKeywords': userInfo.userKeywords
           });
+
+  /// Sets the DSA (Digital Services Act) required flag.
+  ///
+  /// [dsaComplianceStatus] DSA required flag. Values -
+  ///
+  /// 1. [POBDSAComplianceStatus.notRequired] = Not required
+  /// 2. [POBDSAComplianceStatus.optional] = Supported, bid responses with or without the DSA object will be accepted
+  /// 3. [POBDSAComplianceStatus.required] = Required, bid responses without a DSA object will not be accepted
+  /// 4. [POBDSAComplianceStatus.requiredPubOnlinePlatform] = Required, bid responses without DSA object will not be accepted, Publisher is an Online Platform
+  ///
+  /// Default value is [POBDSAComplianceStatus.notRequired]
+  static Future<void> setDSAComplianceStatus(
+          final POBDSAComplianceStatus dsaComplianceStatus) =>
+      openWrapMethodChannel.callPlatformMethodWithTag<void>(
+          tag: _tag,
+          methodName: 'setDSAComplianceStatus',
+          argument: dsaComplianceStatus.index);
+
+  /// Gets the current DSA (Digital Services Act) required flag.
+  ///
+  /// 1. [POBDSAComplianceStatus.notRequired] = Not required
+  /// 2. [POBDSAComplianceStatus.optional] = Supported, bid responses with or without the DSA object will be accepted
+  /// 3. [POBDSAComplianceStatus.required] = Required, bid responses without a DSA object will not be accepted
+  /// 4. [POBDSAComplianceStatus.requiredPubOnlinePlatform] = Required, bid responses without DSA object will not be accepted, Publisher is an Online Platform
+  static Future<POBDSAComplianceStatus> getDSAComplianceStatus() async {
+    int? dsaComplianceStatus =
+        await openWrapMethodChannel.callPlatformMethodWithTag<int>(
+            tag: _tag, methodName: 'getDSAComplianceStatus');
+
+    return POBDSAComplianceStatus.values[
+        dsaComplianceStatus ?? POBDSAComplianceStatus.notRequired.index];
+  }
+
+  /// API to Add the External user id /Data Partner ids which helps publisher in better user targeting
+  ///
+  /// [userId] instance of POBExternalUserId class
+  static Future<void> addExternalUserId(final POBExternalUserId userId) =>
+      openWrapMethodChannel.callPlatformMethodWithTag<void>(
+          tag: _tag, methodName: 'addExternalUserId', argument: userId.toMap());
+
+  /// API to get all set external user ids
+  static Future<List<POBExternalUserId>> getExternalUserIds() async {
+    List<Object?>? userIdList =
+        await openWrapMethodChannel.callPlatformMethodWithTag<List<Object?>>(
+            tag: _tag, methodName: 'getExternalUserIds');
+
+    if (userIdList == null) {
+      return [];
+    }
+
+    return userIdList
+        .map((e) => POBExternalUserId.fromMap(
+            Map<String, dynamic>.from(e as Map<Object?, Object?>)))
+        .toList();
+  }
+
+  /// API to remove the external user ids of a particular source
+  ///
+  /// [source] name of source
+  static Future<void> removeExternalUserIds(final String source) =>
+      openWrapMethodChannel.callPlatformMethodWithTag<void>(
+          tag: _tag, methodName: 'removeExternalUserIds', argument: source);
+
+  /// API to remove all external user ids
+  static Future<void> removeAllExternalUserIds() =>
+      openWrapMethodChannel.callPlatformMethodWithTag<void>(
+          tag: _tag, methodName: 'removeAllExternalUserIds');
+}
+
+/// Represents the configuration for the OpenWrap Flutter plugin.
+///
+/// This class represents the configuration parameters required for initializing
+/// the OpenWrap Flutter plugin, including the publisher ID and the list of profile IDs.
+///
+/// [publisherId] The Publisher ID.
+/// [profileIds] The List of Profile IDs.
+@immutable
+class OpenWrapSDKConfig {
+  final String publisherId;
+  final List<int> profileIds;
+
+  /// Creates an instance of OpenWrapSDKConfig.
+  /// [publisherId] The Publisher ID.
+  /// [profileIds] The List of Profile IDs.
+  const OpenWrapSDKConfig(this.publisherId, this.profileIds);
+
+  /// Returns a new copy of the OpenWrapSDKConfig with the provided values.
+  /// [publisherId] The Publisher ID.
+  /// [profileIds] The List of Profile IDs.
+  OpenWrapSDKConfig copyWith({
+    String? publisherId,
+    List<int>? profileIds,
+  }) {
+    return OpenWrapSDKConfig(
+      publisherId ?? this.publisherId,
+      profileIds ?? this.profileIds,
+    );
+  }
+}
+
+/// Implementers will receive notifications about the success or failure of [OpenWrapSDK.initialize].
+class OpenWrapSDKListener {
+  OpenWrapSDKListener(
+      {this.onOpenWrapSDKInitialize, this.onOpenWrapSDKInitializeError});
+
+  /// Called when the [OpenWrapSDK.initialize] completes successfully.
+  final POBSDKEvent? onOpenWrapSDKInitialize;
+
+  /// Called when the [OpenWrapSDK.initialize] fails.
+  ///
+  /// [POBError] instance that contains information about the error that occurred while [OpenWrapSDK.initialize].
+  final POBSDKErrorEvent? onOpenWrapSDKInitializeError;
 }

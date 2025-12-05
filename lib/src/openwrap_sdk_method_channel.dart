@@ -4,8 +4,8 @@ import 'package:flutter/services.dart';
 
 import 'helpers/pob_utils.dart';
 import 'pob_ad.dart';
-import 'pob_constants.dart';
 import 'pob_ad_instance_manager.dart';
+import 'pob_constants.dart';
 
 OpenWrapSDKMethodChannel openWrapMethodChannel =
     OpenWrapSDKMethodChannel._('flutter_openwrap_sdk');

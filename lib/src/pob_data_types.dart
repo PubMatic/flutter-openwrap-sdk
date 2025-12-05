@@ -216,12 +216,10 @@ class POBRequest {
   /// Default time out is 5 seconds.
   int _networkTimeoutInSec = 5;
 
-  /// Disables bid summary that is sent in the response, if true.
-  /// Default value is false.
-  bool bidSummaryEnabled = false;
-
   /// This is used to specify OpenWrap version Id of the publisher.
   /// If this is not specified, live version of the profile is considered.
+  /// **Deprecated:** Deprecated from OpenWrap SDK flutter plugin v3.0.0
+  @Deprecated('Deprecated from OpenWrap SDK flutter plugin v3.0.0')
   int? versionId;
 
   /// Indicates whether this request is a test request.
@@ -235,6 +233,10 @@ class POBRequest {
   /// Custom server URL for debugging purpose.
   /// If it is set, ad request will be made to the provided url
   String? adServerUrl;
+
+  /// If true, sends all rejected bids status along with reason of rejection.
+  /// Default value is false.
+  bool returnAllBidStatus = false;
 
   /// Network timeout (in seconds) for making an Ad request.
   /// Default value is 5 seconds. Provided value should be greater than 0.
@@ -262,6 +264,12 @@ class POBImpression {
   /// Custom parameters in the form of a Map. To set multiple values against same key,
   /// use array. Only use list of string as values.
   Map<String, List<String>>? customParams;
+
+  /// Set the GPID for the impression. If not set, ad unit id will be used as GPID.
+  /// global placement identifier (GPID) is a publisher-specified placement (tag)
+  /// ID that is passed unchanged by all supply-side platforms (SSPs).
+  /// Refer https://github.com/InteractiveAdvertisingBureau/openrtb/blob/main/extensions/community_extensions/gpid.md for more details.
+  String? gpid;
 }
 
 /// Class to hold information of rewards.
@@ -317,9 +325,6 @@ class POBBid {
 
   /// Net Ecpm price / bid value
   late double price;
-
-  /// Gross Ecpm price/bid value
-  late double grossPrice;
 
   /// Width of bid creative
   late int width;
@@ -383,7 +388,6 @@ class POBBid {
       ..creativeId = POBUtils.cast(map?[keyCreativeId])
       ..creativeType = POBUtils.cast(map?[keyCreativeType])
       ..dealId = POBUtils.cast(map?[keyDealId])
-      ..grossPrice = POBUtils.cast(map?[keyGrossPrice]) ?? 0.0
       ..lurl = POBUtils.cast(map?[keyLurl])
       ..nurl = POBUtils.cast(map?[keyNurl])
       ..partnerName = POBUtils.cast(map?[keyPartnerName])
@@ -395,5 +399,71 @@ class POBBid {
       ..targetingInfo = POBUtils.convertMapOfObjectToMapOfString(
           POBUtils.cast<Map<Object?, Object?>>(map?[keyTargetingInfo]));
     return bid;
+  }
+}
+
+/// DSA (Digital Services Act) required flag
+enum POBDSAComplianceStatus {
+  /// Not required
+  notRequired,
+
+  /// Supported, bid responses with or without the DSA object will be accepted
+  optional,
+
+  /// Required, bid responses without a DSA object will not be accepted
+  required,
+
+  /// Required, bid responses without DSA object will not be accepted,
+  /// Publisher is an Online Platform
+  requiredPubOnlinePlatform
+}
+
+/// Class to Store Data Partner Ids
+class POBExternalUserId {
+  /// Source name of External user id
+  final String source;
+
+  /// User identifier provided by source
+  final String id;
+
+  /// User agent type
+  ///
+  /// Please refer the [IAB document](https://github.com/InteractiveAdvertisingBureau/AdCOM/blob/master/AdCOM%20v1.0%20FINAL.md#list_agenttypes) for more details.
+  int atype;
+
+  /// External userid extension
+  Map<String, dynamic>? ext;
+
+  /// Constructor to create Data Partner Id object
+  POBExternalUserId({
+    required this.source,
+    required this.id,
+    this.atype = 0,
+    this.ext,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'source': source,
+      'id': id,
+      'atype': atype,
+      if (ext != null) 'ext': ext,
+    };
+  }
+
+  factory POBExternalUserId.fromMap(Map<String, dynamic> map) {
+    return POBExternalUserId(
+      source: map['source'] as String? ?? '',
+      id: map['id'] as String? ?? '',
+      atype: map['atype'] as int? ?? 0,
+      ext: map['ext'] != null
+          ? POBUtils.convertToStringDynamicMap(map['ext'])
+          : null,
+    );
+  }
+
+  @override
+  String toString() {
+    return 'POBExternalUserId{source: $source, id: $id, atype: $atype, ext: $ext}';
   }
 }

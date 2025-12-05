@@ -13,4 +13,7 @@ struct Constants {
     static let kInternalErrorCode: Int = 1006 // internal error
     static let kInternalErrorMsg: String = "unknown error occurred"
     static let kOpenWrapPlatformException: String = "OpenWrapPlatformException"
+    static let kInitErrorCode: Int = 1013 // initialization error
+    static let kInitErrorMessage:
+                String = "One or more invalid mandatory config parameters. Please verify Publisher Id & Profile Ids"
 }

@@ -37,10 +37,11 @@ class POBUtils {
 
     requestMap['debug'] = request.debug;
     requestMap['networkTimeout'] = request.getNetworkTimeout;
+    // ignore: deprecated_member_use_from_same_package
     requestMap['versionId'] = request.versionId;
     requestMap['testMode'] = request.testMode;
     requestMap['adServerUrl'] = request.adServerUrl;
-    requestMap['bidSummary'] = request.bidSummaryEnabled;
+    requestMap['returnAllBidStatus'] = request.returnAllBidStatus;
 
     return requestMap;
   }
@@ -54,6 +55,7 @@ class POBUtils {
     }
     impressionMap['testCreativeId'] = impression.testCreativeId;
     impressionMap['customParams'] = impression.customParams;
+    impressionMap['gpid'] = impression.gpid;
 
     return impressionMap;
   }
@@ -73,6 +75,35 @@ class POBUtils {
     return data;
   }
 
+  /// Converts Map<String, dynamic> to [POBAdSize] object
+  static POBAdSize convertMapToPOBAdSize(final Map<Object?, Object?>? map) {
+    int? width = POBUtils.cast<int>(map?['w']);
+    int? height = POBUtils.cast<int>(map?['h']);
+    return POBAdSize(width: width ?? 0, height: height ?? 0);
+  }
+
   /// Casts given object into expected type. Returns null otherwise
   static T? cast<T>(Object? object) => object is T ? object : null;
+
+  /// Helps to convert the Android JSON and iOS Dictionary to Map<String, dynamic>
+  static Map<String, dynamic>? convertToStringDynamicMap(dynamic value) {
+    if (value == null) return null;
+    if (value is! Map) return null;
+
+    return value.map<String, dynamic>((key, val) => MapEntry(
+          key.toString(),
+          _convertValue(val),
+        ));
+  }
+
+// Helper method to recursively convert any value
+  static dynamic _convertValue(dynamic val) {
+    if (val is Map) {
+      return convertToStringDynamicMap(val);
+    } else if (val is List) {
+      return val.map((e) => _convertValue(e)).toList();
+    } else {
+      return val;
+    }
+  }
 }

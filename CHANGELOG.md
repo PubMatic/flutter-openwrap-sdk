@@ -1,3 +1,9 @@
+## 3.0.0
+* Supports the latest OpenWrapSDK:
+  * Android OpenWrap SDK version 4.10.0
+  * iOS OpenWrap SDK version 4.10.0
+  * Adds a new API (isMounted) to support recycling ad banners
+
 ## 2.0.0
 * Supports the latest OpenWrap SDK:
   * Android OpenWrap SDK version 3.5.0

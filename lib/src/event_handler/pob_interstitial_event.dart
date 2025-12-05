@@ -1,3 +1,5 @@
+// coverage:ignore-file - Protocol event handler for interstitial ads
+
 import '../pob_type_definition.dart';
 import 'pob_base_event.dart';
 

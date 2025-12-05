@@ -19,7 +19,7 @@ class _OpenWrapBannerScreenState extends State<OpenWrapBannerScreen> {
   @override
   void initState() {
     super.initState();
-    POBApplicationInfo applicationInfo = POBApplicationInfo();
+    final POBApplicationInfo applicationInfo = POBApplicationInfo();
 
     if (Platform.isAndroid) {
       // A valid Play Store Url of an Android application is required.
@@ -115,4 +115,10 @@ class _BannerAdListener implements POBBannerAdListener {
   @override
   POBAdEvent<POBBannerAd>? get onAdImpression =>
       (POBBannerAd ad) => developer.log('$_tag: Ad Impression');
+
+  /// Callback method Notifies that the banner ad size has changed.
+  @override
+  POBAdSizeChanged<POBBannerAd>? get onAdSizeChanged =>
+      (POBBannerAd ad, POBAdSize size) =>
+          developer.log('$_tag: Ad Size Changed to $size');
 }

@@ -33,10 +33,10 @@ class POBRewardedClient(
   adUnitId: String
 ) : POBAdClient(adId, channel) {
 
-  private val rewardedAd: POBRewardedAd?
+  private val rewardedAd: POBRewardedAd? =
+    POBRewardedAd.getRewardedAd(context, pubId, profileId, adUnitId)
 
   init {
-    rewardedAd = POBRewardedAd.getRewardedAd(context, pubId, profileId, adUnitId)
     request = rewardedAd?.adRequest
     impression = rewardedAd?.impression
   }

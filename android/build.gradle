@@ -1,18 +1,9 @@
-group 'com.pubmatic.sdk.flutter_openwrap_sdk'
-version '1.0.0'
-
-buildscript {
-    ext.kotlin_version = '1.5.31'
-    repositories {
-        google()
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath 'com.android.tools.build:gradle:7.1.2'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    }
+plugins {
+    id "com.android.library"
+    id "kotlin-android"
 }
+
+group 'com.pubmatic.sdk.flutter_openwrap_sdk'
 
 rootProject.allprojects {
     repositories {
@@ -24,12 +15,11 @@ rootProject.allprojects {
     }   
 }
 
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-
 android {
-    compileSdk 33
+    compileSdk 35
 
+    namespace 'com.pubmatic.sdk.flutter_openwrap_sdk'
+    
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -46,9 +36,9 @@ android {
     defaultConfig {
         minSdkVersion 19
     }
+}
 
-    dependencies {
-        // To integrate OpenWrap SDK
-        implementation 'com.pubmatic.sdk:openwrap:3.5.0'
-    }
+dependencies {
+    // To integrate OpenWrap SDK
+    implementation 'com.pubmatic.sdk:openwrap:4.10.0'
 }

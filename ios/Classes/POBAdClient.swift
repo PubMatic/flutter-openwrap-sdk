@@ -25,7 +25,6 @@ class POBAdClient: NSObject {
         bidMap["impressionId"] = bid.impressionId
         bidMap["bundle"] = bid.bundle
         bidMap["price"] = bid.price.doubleValue
-        bidMap["grossPrice"] = bid.grossPrice.doubleValue
         bidMap["height"] = Int(bid.size.height)
         bidMap["width"] = Int(bid.size.width)
         bidMap["status"] = bid.status.intValue
@@ -54,14 +53,15 @@ class POBAdClient: NSObject {
         if let networkTimeout = values["networkTimeout"] as? Int {
             request?.networkTimeout = TimeInterval(networkTimeout)
         }
-        if let bidSummaryEnabled = values["bidSummary"] as? Bool {
-            request?.bidSummaryEnabled = bidSummaryEnabled
+        if let returnAllBidStatus = values["returnAllBidStatus"] as? Bool {
+            request?.returnAllBidStatus = returnAllBidStatus
         }
         if let testModeEnabled = values["testMode"] as? Bool {
             request?.testModeEnabled = testModeEnabled
         }
 
         // These properties can have either custom value or default value as `null`
+        // versionId API is deprecated in v4.5.0 OWSDK and will be removed in future SDK version.
         request?.versionId = values["versionId"] as? NSNumber
         request?.adServerURL = values["adServerUrl"] as? String
     }
@@ -81,6 +81,8 @@ class POBAdClient: NSObject {
         // These properties can have either custom value or default value as `null`
         impression?.testCreativeId = values["testCreativeId"] as? String
         impression?.customParams = values["customParams"] as? [String: Any]
+        // Set gpid
+        impression?.gpid = values["gpid"] as? String
     }
 
     func invokeMethod(names: [String], call: FlutterMethodCall, result: FlutterResult) {
